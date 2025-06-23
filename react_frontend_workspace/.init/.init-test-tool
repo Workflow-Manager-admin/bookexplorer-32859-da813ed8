@@ -1,0 +1,4 @@
+{
+    "command": "npm run test",
+    "working_directory": "/home/kavia/workspace/code-generation/bookexplorer-32859-da813ed8/react_frontend_workspace/react_frontend"
+}
