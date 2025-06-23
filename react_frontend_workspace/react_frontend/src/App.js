@@ -142,7 +142,25 @@ function App() {
           </div>
         </div>
         {isLoading && (
-          <div className="loading" aria-live="polite">Loading...</div>
+          <div className="loading" aria-live="polite">
+            {/* Skeleton loader grid (same shape as grid) */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 px-2 animate-pulse mt-4">
+              {[...Array(PAGE_SIZE)].map((_, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-xl bg-white shadow-lg border border-gray-100 p-6 flex flex-col items-center space-y-3"
+                  role="status"
+                  aria-label="Loading book"
+                >
+                  <div className="w-24 h-36 mb-3 rounded-lg bg-gray-200/70" />
+                  <div className="h-4 w-24 bg-gray-200/80 rounded-full" />
+                  <div className="h-3 w-16 bg-gray-200/70 rounded-full" />
+                  <div className="h-6 w-6 bg-gray-100/80 rounded-full self-end" />
+                </div>
+              ))}
+            </div>
+            <span className="sr-only">Loading books...</span>
+          </div>
         )}
         {!isLoading && books.length === 0 && (
           <div className="empty" aria-live="polite">
@@ -152,19 +170,21 @@ function App() {
         {!isLoading && books.length > 0 && (
           <>
             <section className="book-grid" aria-label="Book Results">
-              {books.map((book) => (
+              {books.map((book, i) => (
                 <BookCard
                   key={book.id}
                   book={book}
                   openModal={openModal}
                   isFavorited={isFavorited(book)}
                   toggleFavorite={toggleFavorite}
+                  // micro-animation on entrance
+                  style={{ animation: `fadeInUp .33s cubic-bezier(.2,2,.6,1) ${(i * 0.05 + 0.12).toFixed(2)}s both` }}
                 />
               ))}
             </section>
             <nav className="pagination" aria-label="Pagination">
               <button
-                className="pagination-btn"
+                className="pagination-btn transition duration-150 focus-visible:ring-2 focus-visible:ring-secondary"
                 onClick={() => handlePage(Math.max(0, startIndex - PAGE_SIZE))}
                 disabled={startIndex === 0}
               >Previous</button>
@@ -172,7 +192,7 @@ function App() {
                 {startIndex + 1}-{Math.min(startIndex + PAGE_SIZE, resultCount)} of {resultCount}
               </span>
               <button
-                className="pagination-btn"
+                className="pagination-btn transition duration-150 focus-visible:ring-2 focus-visible:ring-secondary"
                 onClick={() => handlePage(startIndex + PAGE_SIZE)}
                 disabled={startIndex + PAGE_SIZE >= resultCount}
               >Next</button>
